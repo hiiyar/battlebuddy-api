@@ -1,13 +1,10 @@
-const client = require('../../config/clientElasticSearch');
-
-const indexToSearch = 'pubg';
+const userModel = require('../models/user');
 
 module.exports.getByPlayerName = async (playerName) => {
     try {
 
-        const response = await client.search({
-            index: indexToSearch,
-            q: 'integrations.pubg.playerName:'+playerName
+        const response = await userModel.find({
+            "integrations.pubg.playerName": "?"+ playerName +"?"
         });
 
         return response;
@@ -20,11 +17,7 @@ module.exports.getByPlayerName = async (playerName) => {
 module.exports.getById = async (id) => {
     try {
 
-        const response = await client.get({
-            index: indexToSearch,
-            type: '_doc',
-            id: id
-        });
+        const response = await userModel.findOne()
 
         return response;
 
@@ -57,15 +50,15 @@ module.exports.insert = async (user) => {
 
     try {
 
-        const response = await client.create({
-            index: indexToSearch,
-            type: '_doc',
-            body: {
-                user
-            }
+        const newUser = new userModel({
+            name: user.name,
+            email: user.email,
+            password: user.password
         });
 
-        return response;
+        newUser.save();
+
+        return newUser;
 
     } catch (e) {
 
@@ -73,4 +66,15 @@ module.exports.insert = async (user) => {
 
         return e;
     }
+}
+
+module.exports.login = async(email, pass) => {
+
+    const user = await userModel.findOne({
+        email: email,
+        password: pass
+    });
+
+    return user;
+
 }

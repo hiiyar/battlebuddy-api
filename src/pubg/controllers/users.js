@@ -1,5 +1,6 @@
 const service = require('../services/users');
 
+
 module.exports.get = async (req, res) => {
 
     try {
@@ -52,4 +53,15 @@ module.exports.post = async (req, res) => {
         res.json(e);
 
     }
+}
+
+module.exports.login = async (req, res) => {
+
+    const username = req.body.username;
+    const pass = req.body.password;
+
+    const session = await service.userLogin(username, pass);
+
+    res.json(session);
+
 }

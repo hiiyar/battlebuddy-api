@@ -1,20 +1,18 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const config = require('./config/config');
+
 const app = express();
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true }));
 
-const context = 'pubg';
+app.set('secret', config.secretKey);
 
-const index = require('./'+ context +'/routes/index');
-const matches = require('./'+ context +'/routes/matches');
-const seasons = require('./'+ context +'/routes/seasons');
-const telemetry = require('./'+ context +'/routes/telemetry');
-const users = require('./'+ context +'/routes/users');
+const index = require('./routes/index');
+const users = require('./routes/users');
 
+app.use('/api', index);
 app.use('/api/users', users);
-
-app.use('/'+ context +'/api', index);
-app.use('/'+ context +'/api/matches', matches);
-app.use('/'+ context +'/api/seasons', seasons);
-app.use('/'+ context +'/api/telemetry', telemetry);
 
 app.listen(5000, function(){
     console.log('API conectada');

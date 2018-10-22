@@ -1,4 +1,6 @@
-const repo = require('../repositories/users')
+const repo = require('../repositories/users');
+const jwt = require('jsonwebtoken');
+const config = require('../../config/config');
 
 module.exports.userDetails = async (id) => {
     const user = await repo.getById(id);
@@ -19,6 +21,32 @@ module.exports.userUpdate = async (id, data) => {
 module.exports.userInsert = async (user) => {
 
     return await repo.insert(user);
+
+}
+
+module.exports.userLogin = async (username, pass) => {
+
+    const verify = await repo.login(username, pass);
+
+    if (verify && verify.email) {
+
+        // caso a senha do usuário seja encontrada.... iremos criar um token:
+        let token = jwt.sign({id: verify.id, email: verify.email}, config.secretKey, {});
+
+        //Aqui iremos retornar a informação do token via JSON:
+        return {
+            success: true,
+            message: 'Token criado!!!',
+            toke: token
+        };
+
+    } else {
+        return {
+            message: "Usuário inválido"
+        };
+    }
+
+    return ;
 
 }
 
