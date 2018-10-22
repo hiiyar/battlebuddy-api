@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  api:
+    image: diogomainardes/battlebuddy:api
+    container_name: battlebuddy_api
+    volumes:
+      - ./:/app
+    ports:
+      - 5000:5000
+
+networks:
+  default:
+    external:
+      name: battlebuddy
+
