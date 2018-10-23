@@ -1,17 +1,14 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const middleware = require('../middlewares/jwtValidation');
+const userController = require('../controllers/users');
 
 const router = express.Router();
 
-const users = require('../pubg/controllers/users');
-const jsonParser = bodyParser.json();
-
-router.post('/login', users.login);
-router.post('/', jsonParser, users.post);
+router.post('/login', userController.login);
+router.post('/', userController.insert);
 
 router.use(middleware.jwtValidation);
-router.get('/:id', users.get);
-router.get('/:id/update', users.update);
+router.get('/:id', userController.get);
+router.patch('/:id', userController.update);
 
 module.exports = router;

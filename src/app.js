@@ -1,19 +1,25 @@
 const express = require('express');
+
 const bodyParser = require('body-parser');
 const config = require('./config/config');
-
+const errorHandler = require('./errors/errorHandler');
+const notFoundHandler = require('./errors/notFoundHandler');
+const corsMiddleware = require('./middlewares/cors');
 const app = express();
-app.use(bodyParser.json()); // support json encoded bodies
+
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.set('secret', config.secretKey);
+app.use(corsMiddleware);
 
-const index = require('./routes/index');
-const users = require('./routes/users');
+const usersRoutes = require('./routes/users');
 
-app.use('/api', index);
-app.use('/api/users', users);
+app.use('/api/users', usersRoutes);
 
-app.listen(5000, function(){
+// Error Handling
+app.use(errorHandler);
+app.use(notFoundHandler);
+
+app.listen(config.server.port, function(){
     console.log('API conectada');
 });
